@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import {
+  Button,
   Box,
   Card,
   CardHeader,
@@ -14,20 +15,23 @@ import {
   TextField,
   CircularProgress,
   IconButton,
+  Icon,
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import SaveIcon from '@material-ui/icons/Save';
 import { useParams, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import Api from '../utils/api';
 import Diversos from '../utils/diversos';
 
-const CustomerView = (props) => {
+const CustomerEdit = (props) => {
   const api = new Api();
   const diversos = new Diversos();
   const { id } = useParams();
   const history = useNavigate();
   const [isLoadingCustomer, setIsLoadingCustomer] = useState(false);
   const [customer, setCustomer] = useState(null);
+  const [isLoadingUpdateCustomer, setIsLoadingUpdateCustomer] = useState(false);
 
   const getCustomer = async () => {
     setIsLoadingCustomer(true);
@@ -46,6 +50,11 @@ const CustomerView = (props) => {
     } finally {
       setIsLoadingCustomer(false);
     }
+  };
+
+  const handleSubmit = async () => {
+    setIsLoadingUpdateCustomer(true);
+    setTimeout(() => setIsLoadingUpdateCustomer(false), 1000);
   };
 
   useEffect(() => {
@@ -67,7 +76,7 @@ const CustomerView = (props) => {
         <Container maxWidth="lg">
           <Card>
             <CardHeader
-              subheader="Visualizar dados cadastrais do cliente"
+              subheader="Editar dados cadastrais do cliente"
               title="Cadastro de cliente"
               avatar={(
                 <IconButton size="small" color="primary" onClick={() => history(-1)}>
@@ -127,7 +136,7 @@ const CustomerView = (props) => {
                         required
                         value={customer.NOME}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
@@ -149,7 +158,7 @@ const CustomerView = (props) => {
                         required
                         value={diversos.maskCPF(customer.CPF)}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
@@ -171,7 +180,7 @@ const CustomerView = (props) => {
                         required
                         value={customer.EMAIL}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
@@ -193,7 +202,7 @@ const CustomerView = (props) => {
                         required
                         value={diversos.maskCEP(customer.CEP_R)}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
@@ -215,7 +224,7 @@ const CustomerView = (props) => {
                         required
                         value={customer.ENDE_R}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
@@ -237,7 +246,7 @@ const CustomerView = (props) => {
                         required
                         value={customer.BAIR_R}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
@@ -267,52 +276,41 @@ const CustomerView = (props) => {
                         required
                         value={customer.login ? customer.login.email : ''}
                         variant="outlined"
-                        disabled
+                        disabled={isLoadingUpdateCustomer}
                       />
                     </Grid>
                     <Grid
                       item
-                      md={6}
-                      sm={6}
+                      md={12}
+                      sm={12}
                       sx={{
                         display: 'flex',
                         flexDirection: 'column'
                       }}
-                      xs={6}
+                      xs={12}
                     >
-                      <TextField
+                      <Button
                         fullWidth
-                        // helperText="Please specify the first name"
-                        label="Data cadastro"
-                        name="dataCadastro"
-                        // onChange={handleChange}
-                        required
-                        value={customer.login ? moment(customer.login.created_at).format('DD/MM/YYYY') : ''}
-                        variant="outlined"
-                        disabled
-                      />
-                    </Grid>
-                    <Grid
-                      item
-                      md={6}
-                      sm={6}
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column'
-                      }}
-                      xs={6}
-                    >
-                      <TextField
-                        fullWidth
-                        // helperText="Please specify the first name"
-                        label="Último login"
-                        name="dataUltimoLogin"
-                        // onChange={handleChange}
-                        required
-                        value={customer.login ? moment(customer.login.ultimo_login).format('DD/MM/YYYY') : ''}
-                        variant="outlined"
-                        disabled
-                      />
+                        color="primary"
+                        variant="contained"
+                        onClick={handleSubmit}
+                        disabled={isLoadingUpdateCustomer}
+                        startIcon={
+                          !isLoadingUpdateCustomer ? (
+                            <SaveIcon fontSize="small" />
+                          ) : (
+                            <></>
+                          )
+                        }
+                      >
+                        {
+                          !isLoadingUpdateCustomer ? (
+                            'Salvar'
+                          ) : (
+                            'Salvando, por favor aguarde...'
+                          )
+                        }
+                      </Button>
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -325,4 +323,4 @@ const CustomerView = (props) => {
   );
 };
 
-export default CustomerView;
+export default CustomerEdit;

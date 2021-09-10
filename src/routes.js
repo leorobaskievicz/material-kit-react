@@ -4,6 +4,7 @@ import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
 import CustomerList from './pages/CustomerList';
 import CustomerView from './pages/CustomerView';
+import CustomerEdit from './pages/CustomerEdit';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -19,7 +20,7 @@ const routes = [
       { path: 'account', element: <Account /> },
       { path: 'customers', element: <CustomerList /> },
       { path: 'customer/:id/view', element: <CustomerView /> },
-      { path: 'customer/:id/edit', element: <CustomerList /> },
+      { path: 'customer/:id/edit', element: <CustomerEdit /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
       { path: 'settings', element: <Settings /> },
