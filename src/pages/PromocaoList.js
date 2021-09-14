@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import {
-  Box, CircularProgress, Container, Typography
+  Box,
+  CircularProgress,
+  Container,
+  Typography
 } from '@material-ui/core';
 import qs from 'query-string';
 import PromocaoListResults from '../components/promocao/PromocaoListResult';
@@ -24,7 +27,7 @@ const PromocaoList = () => {
 
     const param = {
       page,
-      per_page: perPage,
+      per_page: perPage
     };
 
     if (search) {
@@ -32,7 +35,10 @@ const PromocaoList = () => {
     }
 
     try {
-      const { data } = await api.get(`/promocoes?${qs.stringify(param)}`, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8');
+      const { data } = await api.get(
+        `/promocoes?${qs.stringify(param)}`,
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8'
+      );
       if (!data.status) {
         throw new Error(data.msg);
       }
