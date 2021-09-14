@@ -16,7 +16,6 @@ import {
   Typography
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import getInitials from '../../utils/getInitials';
 
@@ -39,7 +38,7 @@ const CustomerListResults = ({
               <TableCell>Email</TableCell>
               <TableCell>Endereço</TableCell>
               <TableCell>Telefone</TableCell>
-              <TableCell>Data Cadastro</TableCell>
+              <TableCell>Data Cadastro App</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
@@ -80,9 +79,6 @@ const CustomerListResults = ({
                       <EditIcon />
                     </IconButton>
                   </Link>
-                  <IconButton size="small">
-                    <DeleteIcon />
-                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}

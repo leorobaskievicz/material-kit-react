@@ -41,15 +41,10 @@ const items = [
     title: 'Clientes'
   },
   {
-    href: '/app/products',
+    href: '/app/promo',
     icon: ShoppingBagIcon,
     title: 'Promoções'
   },
-  // {
-  //   href: '/app/account',
-  //   icon: UserIcon,
-  //   title: 'Account'
-  // },
   {
     href: '/app/settings',
     icon: SettingsIcon,
