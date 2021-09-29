@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Avatar,
+  Alert,
   Box,
   Card, IconButton,
   // Checkbox,
@@ -94,43 +95,52 @@ const PromocaoListResult = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {promocoes.map((promo) => (
-                <TableRow hover key={promo.id}>
-                  <TableCell>{promo.id}</TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography color="textPrimary" variant="body1">
-                        {promo.titulo}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{moment(promo.data_inicio).format('DD/MM/YYYY')}</TableCell>
-                  <TableCell>
-                    {moment(promo.data_final).format('DD/MM/YYYY')}
-                  </TableCell>
-                  <TableCell>{promo.status}</TableCell>
-                  <TableCell>
-                    <Link to={`/app/promo/${promo.id}/view`}>
-                      <IconButton size="small">
-                        <VisibilityIcon />
-                      </IconButton>
-                    </Link>
-                    <Link to={`/app/promo/${promo.id}/edit`}>
-                      <IconButton size="small">
-                        <EditIcon />
-                      </IconButton>
-                    </Link>
-                    <IconButton size="small" onClick={() => handleDelete(promo)}>
-                      <DeleteIcon />
-                    </IconButton>
+              {promocoes.length <= 0 ? (
+                <TableRow key={0}>
+                  <TableCell colSpan={6}>
+                    <Alert severity="warning">
+                      Nenhuma promoção localizada
+                    </Alert>
                   </TableCell>
                 </TableRow>
-              ))}
+              )
+                : promocoes.map((promo) => (
+                  <TableRow hover key={promo.id}>
+                    <TableCell>{promo.id}</TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                        <Typography color="textPrimary" variant="body1">
+                          {promo.titulo}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{moment(promo.data_inicio).format('DD/MM/YYYY')}</TableCell>
+                    <TableCell>
+                      {moment(promo.data_final).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>{promo.status}</TableCell>
+                    <TableCell>
+                      <Link to={`/app/promo/${promo.id}/view`}>
+                        <IconButton size="small">
+                          <VisibilityIcon />
+                        </IconButton>
+                      </Link>
+                      <Link to={`/app/promo/${promo.id}/edit`}>
+                        <IconButton size="small">
+                          <EditIcon />
+                        </IconButton>
+                      </Link>
+                      <IconButton size="small" onClick={() => handleDelete(promo)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>
