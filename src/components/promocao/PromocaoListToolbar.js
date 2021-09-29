@@ -5,14 +5,35 @@ import {
   CardContent,
   TextField,
   InputAdornment,
-  SvgIcon
+  SvgIcon,
+  Button,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import { Link as RouterLink } from 'react-router-dom';
 import { Search as SearchIcon } from 'react-feather';
 import PropTypes from 'prop-types';
-import CustomerListResults from './CustomerListResults';
+import PromocaoListResult from './PromocaoListResult';
 
-const CustomerListToolbar = ({ search, setSearch, ...rest }) => (
+const PromocaoListToolbar = ({ search, setSearch, ...rest }) => (
   <Box {...rest}>
+    <Box
+      sx={{
+        mt: 0,
+        display: 'flex',
+        justifyContent: 'flex-end'
+      }}
+    >
+      <RouterLink to="/app/promo/novo">
+        <Button
+          size="medium"
+          color="primary"
+          variant="contained"
+        >
+          <AddIcon />
+          Cadastrar
+        </Button>
+      </RouterLink>
+    </Box>
     <Box sx={{ mt: 3 }}>
       <Card>
         <CardContent>
@@ -28,7 +49,7 @@ const CustomerListToolbar = ({ search, setSearch, ...rest }) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Pesquisar cliente"
+              placeholder="Pesquisar promoções"
               variant="outlined"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -40,9 +61,9 @@ const CustomerListToolbar = ({ search, setSearch, ...rest }) => (
   </Box>
 );
 
-CustomerListToolbar.propTypes = {
+PromocaoListToolbar.propTypes = {
   search: PropTypes.any.isRequired,
   setSearch: PropTypes.func.isRequired,
 };
 
-export default CustomerListToolbar;
+export default PromocaoListToolbar;

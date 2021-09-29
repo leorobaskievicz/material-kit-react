@@ -3,6 +3,12 @@ import DashboardLayout from './components/DashboardLayout';
 import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
 import CustomerList from './pages/CustomerList';
+import CustomerView from './pages/CustomerView';
+import CustomerEdit from './pages/CustomerEdit';
+import PromocaoList from './pages/PromocaoList';
+import PromocaoView from './pages/PromocaoView';
+import PromocaoEdit from './pages/PromocaoEdit';
+import PromocaoAdd from './pages/PromocaoAdd';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -17,6 +23,12 @@ const routes = [
     children: [
       { path: 'account', element: <Account /> },
       { path: 'customers', element: <CustomerList /> },
+      { path: 'customer/:id/view', element: <CustomerView /> },
+      { path: 'customer/:id/edit', element: <CustomerEdit /> },
+      { path: 'promo', element: <PromocaoList /> },
+      { path: 'promo/novo', element: <PromocaoAdd /> },
+      { path: 'promo/:id/view', element: <PromocaoView /> },
+      { path: 'promo/:id/edit', element: <PromocaoEdit /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
       { path: 'settings', element: <Settings /> },
