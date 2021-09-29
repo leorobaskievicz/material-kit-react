@@ -1,25 +1,22 @@
 import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Avatar,
   Box,
-  // Button,
   Divider,
   Drawer,
   Hidden,
   List,
   Typography
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import {
-  // AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
-  // Lock as LockIcon,
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
-  // User as UserIcon,
-  // UserPlus as UserPlusIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Database as DatabaseIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -45,30 +42,28 @@ const items = [
     icon: ShoppingBagIcon,
     title: 'Promoções'
   },
+  // {
+  //   href: '/app/users',
+  //   icon: DatabaseIcon,
+  //   title: 'Usuários'
+  // },
   {
     href: '/app/settings',
     icon: SettingsIcon,
     title: 'Configurações'
-  },
-  // {
-  //   href: '/login',
-  //   icon: LockIcon,
-  //   title: 'Login'
-  // },
-  // {
-  //   href: '/register',
-  //   icon: UserPlusIcon,
-  //   title: 'Register'
-  // },
-  // {
-  //   href: '/404',
-  //   icon: AlertCircleIcon,
-  //   title: 'Error'
-  // }
+  }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!auth || !auth.isLogged || !auth.token) {
+      navigate('/login', { replace: true });
+    }
+  }, [auth]);
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -102,18 +97,12 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           }}
           to="/app/account"
         />
-        <Typography
-          color="textPrimary"
-          variant="h5"
-        >
-          {user.name}
+        <Typography color="textPrimary" variant="h5">
+          {auth.user.usuario}
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
+        {/* <Typography color="textSecondary" variant="body2">
           {user.jobTitle}
-        </Typography>
+        </Typography> */}
       </Box>
       <Divider />
       <Box sx={{ p: 2 }}>
@@ -175,8 +164,7 @@ DashboardSidebar.propTypes = {
 };
 
 DashboardSidebar.defaultProps = {
-  onMobileClose: () => {
-  },
+  onMobileClose: () => {},
   openMobile: false
 };
 

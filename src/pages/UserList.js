@@ -1,30 +1,25 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Typography
-} from '@material-ui/core';
+import { Box, CircularProgress, Container, Typography } from '@material-ui/core'; // eslint-disable-line
 import qs from 'query-string';
 import { useSelector } from 'react-redux';
-import PromocaoListResults from '../components/promocao/PromocaoListResult';
-import PromocaoListToolbar from '../components/promocao/PromocaoListToolbar';
+import UserListResults from '../components/user/UserListResult';
+import UserListToolbar from '../components/user/UserListToolbar';
 import Api from '../utils/api';
 
-const PromocaoList = () => {
+const UserList = () => {
   const api = new Api();
   const auth = useSelector((state) => state.auth);
-  const [isLoadingPromocao, setIsLoadingPromocao] = useState(true);
-  const [promocao, setPromocao] = useState([]);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [user, setUser] = useState([]);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
   const [total, setTotal] = useState(1);
   const [search, setSearch] = useState('');
 
-  const getPromocao = async () => {
-    setIsLoadingPromocao(true);
-    setPromocao([]);
+  const getUser = async () => {
+    setIsLoadingUser(true);
+    setUser([]);
 
     const param = {
       page,
@@ -36,15 +31,12 @@ const PromocaoList = () => {
     }
 
     try {
-      const { data } = await api.get(
-        `/promocoes?${qs.stringify(param)}`,
-        auth.token
-      );
+      const { data } = await api.get(`/users-painel?${qs.stringify(param)}`, auth.token);
       if (!data.status) {
         throw new Error(data.msg);
       }
 
-      setPromocao(data.msg.data);
+      setUser(data.msg.data);
       setPage(data.msg.page);
       setPerPage(data.msg.perPage);
       setTotal(data.msg.total);
@@ -53,26 +45,26 @@ const PromocaoList = () => {
         console.error(e);
       }
     } finally {
-      setIsLoadingPromocao(false);
+      setIsLoadingUser(false);
     }
   };
 
   useEffect(() => {
-    getPromocao();
+    getUser();
   }, []);
 
   useEffect(() => {
-    getPromocao();
+    getUser();
   }, [page, perPage]);
 
   useEffect(() => {
-    setTimeout(getPromocao, 300);
+    setTimeout(getUser, 300);
   }, [search]);
 
   return (
     <>
       <Helmet>
-        <title>{`Promoções | ${process.env.REACT_APP_TITLE}`}</title>
+        <title>{`Usuários | ${process.env.REACT_APP_TITLE}`}</title>
       </Helmet>
       <Box
         sx={{
@@ -82,10 +74,10 @@ const PromocaoList = () => {
         }}
       >
         <Container maxWidth={false}>
-          <PromocaoListToolbar search={search} setSearch={setSearch} />
+          <UserListToolbar search={search} setSearch={setSearch} />
           {
             // eslint-disable-next-line no-nested-ternary
-            isLoadingPromocao ? (
+            isLoadingUser ? (
               <Box sx={{ pt: 3 }}>
                 <Typography align="center" variant="h5" color="primary">
                   <CircularProgress color="primary" sx={{ mb: 3 }} />
@@ -93,16 +85,16 @@ const PromocaoList = () => {
                   Buscando informações, por favor aguarde...
                 </Typography>
               </Box>
-            ) : !promocao ? (
+            ) : !user ? (
               <Box sx={{ pt: 3 }}>
                 <Typography align="center" variant="h5" color="primary">
-                  Nenhuma promoção localizada
+                  Nenhum usuário localizado
                 </Typography>
               </Box>
             ) : (
               <Box sx={{ pt: 3 }}>
-                <PromocaoListResults
-                  promocoes={promocao}
+                <UserListResults
+                  promocoes={user}
                   page={page}
                   setPage={setPage}
                   perPage={perPage}
@@ -118,4 +110,4 @@ const PromocaoList = () => {
   );
 };
 
-export default PromocaoList;
+export default UserList;

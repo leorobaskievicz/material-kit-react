@@ -25,7 +25,7 @@ import swal from 'sweetalert';
 import Api from '../../utils/api';
 import getInitials from '../../utils/getInitials';
 
-const PromocaoListResult = ({
+const UserListResult = ({
   promocoes,
   page,
   setPage,
@@ -63,11 +63,9 @@ const PromocaoListResult = ({
         if (!data.status) {
           swal('Atenção', data.msg, 'error');
         } else {
-          swal('Sucesso', 'Promoção excluída com sucesso', 'success').then(
-            () => {
-              window.location.reload();
-            }
-          );
+          swal('Sucesso', 'Promoção excluída com sucesso', 'success').then(() => {
+            window.location.reload();
+          });
         }
       })
       .catch((e) => {
@@ -99,9 +97,7 @@ const PromocaoListResult = ({
               {promocoes.length <= 0 ? (
                 <TableRow key={0}>
                   <TableCell colSpan={6}>
-                    <Alert severity="warning">
-                      Nenhuma promoção localizada
-                    </Alert>
+                    <Alert severity="warning">Nenhuma promoção localizada</Alert>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -123,9 +119,7 @@ const PromocaoListResult = ({
                     <TableCell>
                       {moment(promo.data_inicio).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>
-                      {moment(promo.data_final).format('DD/MM/YYYY')}
-                    </TableCell>
+                    <TableCell>{moment(promo.data_final).format('DD/MM/YYYY')}</TableCell>
                     <TableCell>{promo.status}</TableCell>
                     <TableCell>
                       <Link to={`/app/promo/${promo.id}/view`}>
@@ -133,10 +127,7 @@ const PromocaoListResult = ({
                           <VisibilityIcon />
                         </IconButton>
                       </Link>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDelete(promo)}
-                      >
+                      <IconButton size="small" onClick={() => handleDelete(promo)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -167,7 +158,7 @@ const PromocaoListResult = ({
   );
 };
 
-PromocaoListResult.propTypes = {
+UserListResult.propTypes = {
   promocoes: PropTypes.array.isRequired,
   page: PropTypes.number.isRequired,
   setPage: PropTypes.func.isRequired,
@@ -176,4 +167,4 @@ PromocaoListResult.propTypes = {
   total: PropTypes.number.isRequired
 };
 
-export default PromocaoListResult;
+export default UserListResult;

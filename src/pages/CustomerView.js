@@ -13,16 +13,18 @@ import {
   Typography,
   TextField,
   CircularProgress,
-  IconButton,
+  IconButton
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useParams, useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import Api from '../utils/api';
 import Diversos from '../utils/diversos';
 
 const CustomerView = (props) => {
   const api = new Api();
+  const auth = useSelector((state) => state.auth);
   const diversos = new Diversos();
   const { id } = useParams();
   const history = useNavigate();
@@ -33,7 +35,7 @@ const CustomerView = (props) => {
     setIsLoadingCustomer(true);
 
     try {
-      const { data } = await api.get(`/customer/${id}`, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8');
+      const { data } = await api.get(`/customer/${id}`, auth.token);
       if (!data.status) {
         throw new Error(data.msg);
       }
@@ -69,11 +71,11 @@ const CustomerView = (props) => {
             <CardHeader
               subheader="Visualizar dados cadastrais do cliente"
               title="Cadastro de cliente"
-              avatar={(
+              avatar={
                 <IconButton size="small" color="primary" onClick={() => history(-1)}>
                   <ArrowBackIcon />
                 </IconButton>
-              )}
+              }
             />
             <Divider />
             {
@@ -95,11 +97,7 @@ const CustomerView = (props) => {
                 </Box>
               ) : (
                 <CardContent>
-                  <Grid
-                    container
-                    spacing={6}
-                    wrap="wrap"
-                  >
+                  <Grid container spacing={6} wrap="wrap">
                     <Grid
                       item
                       md={12}
@@ -110,12 +108,7 @@ const CustomerView = (props) => {
                       }}
                       xs={12}
                     >
-                      <Typography
-                        color="textPrimary"
-                        gutterBottom
-                        variant="h6"
-                        sx={{ mb: 2 }}
-                      >
+                      <Typography color="textPrimary" gutterBottom variant="h6" sx={{ mb: 2 }}>
                         Dados Sistema
                       </Typography>
                       <TextField
@@ -250,12 +243,7 @@ const CustomerView = (props) => {
                       }}
                       xs={12}
                     >
-                      <Typography
-                        color="textPrimary"
-                        gutterBottom
-                        variant="h6"
-                        sx={{ mb: 2 }}
-                      >
+                      <Typography color="textPrimary" gutterBottom variant="h6" sx={{ mb: 2 }}>
                         Dados App
                       </Typography>
                       <TextField
@@ -287,7 +275,11 @@ const CustomerView = (props) => {
                         name="dataCadastro"
                         // onChange={handleChange}
                         required
-                        value={customer.login ? moment(customer.login.created_at).format('DD/MM/YYYY') : ''}
+                        value={
+                          customer.login
+                            ? moment(customer.login.created_at).format('DD/MM/YYYY')
+                            : ''
+                        }
                         variant="outlined"
                         disabled
                       />
@@ -309,7 +301,11 @@ const CustomerView = (props) => {
                         name="dataUltimoLogin"
                         // onChange={handleChange}
                         required
-                        value={customer.login ? moment(customer.login.ultimo_login).format('DD/MM/YYYY') : ''}
+                        value={
+                          customer.login
+                            ? moment(customer.login.ultimo_login).format('DD/MM/YYYY')
+                            : ''
+                        }
                         variant="outlined"
                         disabled
                       />

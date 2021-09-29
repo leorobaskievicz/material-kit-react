@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
@@ -11,11 +12,15 @@ import {
   TextField,
   Typography
 } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../store/ducks/auth';
 import Api from '../utils/api';
 
-const Login = () => {
+const Login = (props) => {
   const navigate = useNavigate();
   const api = new Api();
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -56,7 +61,8 @@ const Login = () => {
                   throw new Error('Login inválido');
                 }
 
-                navigate('/app/dashboard', { replace: true });
+                dispatch(login(param.usuario, param.senha, data.token));
+                // navigate('/app/dashboard', { replace: true });
               } catch (e) {
                 if (process.env.REACT_APP_ENVIROMENT === 'development') {
                   console.error(e);
