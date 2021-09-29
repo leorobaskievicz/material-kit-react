@@ -16,19 +16,21 @@ import {
   IconButton,
   Button,
   Paper,
-  Alert,
+  Alert
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useParams, useNavigate } from 'react-router-dom';
 import Parser from 'html-react-parser';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import { useSelector } from 'react-redux';
 import Api from '../utils/api';
 import Diversos from '../utils/diversos';
 
 const PromocaoView = (props) => {
   const api = new Api();
   const diversos = new Diversos();
+  const auth = useSelector((state) => state.auth);
   const { id } = useParams();
   const history = useNavigate();
   const [isLoadingPromocao, setIsLoadingPromocao] = useState(false);
@@ -38,7 +40,7 @@ const PromocaoView = (props) => {
     setIsLoadingPromocao(true);
 
     try {
-      const { data } = await api.get(`/promocao/${id}`, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8');
+      const { data } = await api.get(`/promocao/${id}`, auth.token);
       if (!data.status) {
         throw new Error(data.msg);
       }
@@ -74,11 +76,15 @@ const PromocaoView = (props) => {
             <CardHeader
               subheader="Visualizar dados cadastrais da promoção"
               title="Cadastro de promoções"
-              avatar={(
-                <IconButton size="small" color="primary" onClick={() => history(-1)}>
+              avatar={
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => history(-1)}
+                >
                   <ArrowBackIcon />
                 </IconButton>
-              )}
+              }
             />
             <Divider />
             {
@@ -100,11 +106,7 @@ const PromocaoView = (props) => {
                 </Box>
               ) : (
                 <CardContent>
-                  <Grid
-                    container
-                    spacing={6}
-                    wrap="wrap"
-                  >
+                  <Grid container spacing={6} wrap="wrap">
                     <Grid
                       item
                       md={12}
@@ -150,7 +152,9 @@ const PromocaoView = (props) => {
                         label="Data inicio"
                         name="dataini"
                         required
-                        value={moment(promocao.data_inicio).format('DD/MM/YYYY - dddd')}
+                        value={moment(promocao.data_inicio).format(
+                          'DD/MM/YYYY - dddd'
+                        )}
                         variant="outlined"
                         disabled
                       />
@@ -170,7 +174,9 @@ const PromocaoView = (props) => {
                         label="Data final"
                         name="datafim"
                         required
-                        value={moment(promocao.data_final).format('DD/MM/YYYY - dddd')}
+                        value={moment(promocao.data_final).format(
+                          'DD/MM/YYYY - dddd'
+                        )}
                         variant="outlined"
                         disabled
                       />
@@ -239,17 +245,15 @@ const PromocaoView = (props) => {
                       }}
                       xs={12}
                     >
-                      {
-                        !promocao.banner1 ? (
-                          <Alert severity="warning">
-                            Nenhum banner cadastrado nesta promoção
-                          </Alert>
-                        ) : (
-                          <Paper elevation={0}>
-                            <img src={promocao.banner1} alt="Banner promoção" />
-                          </Paper>
-                        )
-                      }
+                      {!promocao.banner1 ? (
+                        <Alert severity="warning">
+                          Nenhum banner cadastrado nesta promoção
+                        </Alert>
+                      ) : (
+                        <Paper elevation={0}>
+                          <img src={promocao.banner1} alt="Banner promoção" />
+                        </Paper>
+                      )}
                     </Grid>
                     <Grid
                       item
@@ -282,17 +286,23 @@ const PromocaoView = (props) => {
                       }}
                       xs={12}
                     >
-                      {
-                        !promocao.voucher || promocao.voucher === 'null' ? (
-                          <Alert severity="warning">
-                            Nenhum voucher cadastrado nesta promoção
-                          </Alert>
-                        ) : (
-                          <Paper elevation={2}>
-                            <iframe title="Voucher promoção" src={`${promocao.voucher}`} style={{ borderWidth: 0, width: '100%', height: 350 }} />
-                          </Paper>
-                        )
-                      }
+                      {!promocao.voucher || promocao.voucher === 'null' ? (
+                        <Alert severity="warning">
+                          Nenhum voucher cadastrado nesta promoção
+                        </Alert>
+                      ) : (
+                        <Paper elevation={2}>
+                          <iframe
+                            title="Voucher promoção"
+                            src={`${promocao.voucher}`}
+                            style={{
+                              borderWidth: 0,
+                              width: '100%',
+                              height: 350
+                            }}
+                          />
+                        </Paper>
+                      )}
                     </Grid>
                   </Grid>
                 </CardContent>

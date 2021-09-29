@@ -12,16 +12,16 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/ducks/auth';
 import Logo from './Logo';
 
 const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
   const [notifications] = useState([]);
+  const dispatch = useDispatch();
 
   return (
-    <AppBar
-      elevation={0}
-      {...rest}
-    >
+    <AppBar elevation={0} {...rest}>
       <Toolbar>
         <RouterLink to="/">
           <Logo style={{ height: 40 }} />
@@ -37,7 +37,11 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton color="inherit" size="large">
+          <IconButton
+            color="inherit"
+            size="large"
+            onClick={() => dispatch(logout())}
+          >
             <InputIcon />
           </IconButton>
         </Hidden>

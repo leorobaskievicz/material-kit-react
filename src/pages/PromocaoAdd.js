@@ -15,8 +15,10 @@ import {
   Select,
   FormControl,
   InputLabel,
-  MenuItem, Alert, AlertTitle,
-  FormHelperText,
+  MenuItem,
+  Alert,
+  AlertTitle,
+  FormHelperText
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Editor } from '@tinymce/tinymce-react';
@@ -26,11 +28,13 @@ import { Formik } from 'formik';
 import * as YupPromocaoAdd from 'yup';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import { useSelector } from 'react-redux';
 import Api from '../utils/api';
 
 const PromocaoAdd = (props) => {
-  const api = new Api();
   const history = useNavigate();
+  const api = new Api();
+  const auth = useSelector((state) => state.auth);
   const [hasError, setHasError] = useState(false);
   const [hasSuccess, setHasSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,11 +74,7 @@ const PromocaoAdd = (props) => {
       }
 
       try {
-        const { data } = await api.postFile(
-          '/promocao',
-          param,
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8'
-        );
+        const { data } = await api.postFile('/promocao', param, auth.token);
 
         if (!data.status) {
           throw new Error(data.msg);
@@ -104,18 +104,20 @@ const PromocaoAdd = (props) => {
         datafim: moment().add(1, 'month').format('YYYY-MM-DD'),
         banner1: null,
         voucher: null,
-        status: 'Em revisão',
+        status: 'Em revisão'
       }}
-      validationSchema={
-        YupPromocaoAdd.object().shape({
-          titulo: YupPromocaoAdd.string().max(100).required('Título é obrigatório'),
-          texto: YupPromocaoAdd.mixed().required('Texto descritivo da promoção é obrigatório'),
-          voucher: YupPromocaoAdd.mixed(),
-          banner1: YupPromocaoAdd.mixed(),
-          dataini: YupPromocaoAdd.date().required('Data de início é obrigatório').min(moment().format('YYYY-MM-DD'), 'Data de inicio inválida'),
-          datafim: YupPromocaoAdd.date().required('Data de término é obrigatório').min(moment().format('YYYY-MM-DD'), 'Data de término inválida'),
-        })
-      }
+      validationSchema={YupPromocaoAdd.object().shape({
+        titulo: YupPromocaoAdd.string().max(100).required('Título é obrigatório'),
+        texto: YupPromocaoAdd.mixed().required('Texto descritivo da promoção é obrigatório'),
+        voucher: YupPromocaoAdd.mixed(),
+        banner1: YupPromocaoAdd.mixed(),
+        dataini: YupPromocaoAdd.date()
+          .required('Data de início é obrigatório')
+          .min(moment().format('YYYY-MM-DD'), 'Data de inicio inválida'),
+        datafim: YupPromocaoAdd.date()
+          .required('Data de término é obrigatório')
+          .min(moment().format('YYYY-MM-DD'), 'Data de término inválida')
+      })}
       onSubmit={postPromocao}
     >
       {({
@@ -126,7 +128,7 @@ const PromocaoAdd = (props) => {
         isSubmitting,
         touched,
         values,
-        setFieldValue,
+        setFieldValue
       }) => (
         <form onSubmit={handleSubmit}>
           <Helmet>
@@ -144,57 +146,49 @@ const PromocaoAdd = (props) => {
                 <CardHeader
                   subheader="Cadastrar nova promoção"
                   title="Cadastro de promoções"
-                  avatar={(
+                  avatar={
                     <IconButton size="small" color="primary" onClick={() => history(-1)}>
                       <ArrowBackIcon />
                     </IconButton>
-                  )}
+                  }
                 />
                 <Divider />
                 <CardContent>
-                  <Grid
-                    container
-                    spacing={6}
-                    wrap="wrap"
-                  >
-                    {
-                      hasError && (
-                        <Grid
-                          item
-                          md={12}
-                          sm={12}
-                          xs={12}
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'column'
-                          }}
-                        >
-                          <Alert severity="error">
-                            <AlertTitle>Atenção</AlertTitle>
-                            {hasError}
-                          </Alert>
-                        </Grid>
-                      )
-                    }
-                    {
-                      hasSuccess && (
-                        <Grid
-                          item
-                          md={12}
-                          sm={12}
-                          xs={12}
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'column'
-                          }}
-                        >
-                          <Alert severity="success">
-                            <AlertTitle>Sucesso</AlertTitle>
-                            {hasSuccess}
-                          </Alert>
-                        </Grid>
-                      )
-                    }
+                  <Grid container spacing={6} wrap="wrap">
+                    {hasError && (
+                      <Grid
+                        item
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        <Alert severity="error">
+                          <AlertTitle>Atenção</AlertTitle>
+                          {hasError}
+                        </Alert>
+                      </Grid>
+                    )}
+                    {hasSuccess && (
+                      <Grid
+                        item
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        <Alert severity="success">
+                          <AlertTitle>Sucesso</AlertTitle>
+                          {hasSuccess}
+                        </Alert>
+                      </Grid>
+                    )}
                     <Grid
                       item
                       md={12}
@@ -205,12 +199,7 @@ const PromocaoAdd = (props) => {
                       }}
                       xs={12}
                     >
-                      <Typography
-                        color="textPrimary"
-                        gutterBottom
-                        variant="h6"
-                        sx={{ mb: 2 }}
-                      >
+                      <Typography color="textPrimary" gutterBottom variant="h6" sx={{ mb: 2 }}>
                         Dados da Promoção
                       </Typography>
                       <TextField
@@ -284,7 +273,10 @@ const PromocaoAdd = (props) => {
                         flexDirection: 'column'
                       }}
                     >
-                      <FormControl variant="outlined" error={Boolean(touched.texto && errors.texto)}>
+                      <FormControl
+                        variant="outlined"
+                        error={Boolean(touched.texto && errors.texto)}
+                      >
                         <InputLabel htmlFor="texto-editor">Texto</InputLabel>
                         <Editor
                           id="texto-editor"
@@ -292,13 +284,16 @@ const PromocaoAdd = (props) => {
                           apiKey="fnaqita88bn9zqc2k9bb6n3s0bgzs0weotvlt8jtgsnh0yrk"
                           init={{
                             plugins: 'link image code',
-                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+                            toolbar:
+                              'undo redo | bold italic | alignleft aligncenter alignright | code',
                             width: '100%'
                           }}
                           onChange={(e) => setFieldValue('texto', e.target.getContent())}
                           style={{ width: '100%' }}
                         />
-                        <FormHelperText id="texto-editor-helper-text">{touched.texto && errors.texto}</FormHelperText>
+                        <FormHelperText id="texto-editor-helper-text">
+                          {touched.texto && errors.texto}
+                        </FormHelperText>
                       </FormControl>
                     </Grid>
                     <Grid
@@ -402,13 +397,7 @@ const PromocaoAdd = (props) => {
                         type="submit"
                         variant="contained"
                       >
-                        {
-                          isLoading ? (
-                            'Salvando, por favor aguarde...'
-                          ) : (
-                            'Salvar'
-                          )
-                        }
+                        {isLoading ? 'Salvando, por favor aguarde...' : 'Salvar'}
                       </Button>
                     </Grid>
                   </Grid>

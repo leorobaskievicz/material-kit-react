@@ -17,18 +17,20 @@ import {
   IconButton,
   Icon,
   Alert,
-  AlertTitle,
+  AlertTitle
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SaveIcon from '@material-ui/icons/Save';
 import { useParams, useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import Api from '../utils/api';
 import Diversos from '../utils/diversos';
 
 const CustomerEdit = (props) => {
   const api = new Api();
   const diversos = new Diversos();
+  const auth = useSelector((state) => state.auth);
   const { id } = useParams();
   const history = useNavigate();
   const [isLoadingCustomer, setIsLoadingCustomer] = useState(false);
@@ -45,7 +47,7 @@ const CustomerEdit = (props) => {
       const { data } = await api.post(
         '/frete/cep',
         { cep: customer.CEP_R },
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8'
+        auth.token
       );
       if (!data.status) {
         throw new Error(data.msg);
@@ -73,10 +75,7 @@ const CustomerEdit = (props) => {
     setIsLoadingCustomer(true);
 
     try {
-      const { data } = await api.get(
-        `/customer/${id}`,
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8'
-      );
+      const { data } = await api.get(`/customer/${id}`, auth.token);
       if (!data.status) {
         throw new Error(data.msg);
       }
@@ -103,7 +102,7 @@ const CustomerEdit = (props) => {
       UF_R: customer.UF_R,
       CEP_R: customer.CEP_R,
       EMAIL: customer.EMAIL,
-      CPF: customer.CPF,
+      CPF: customer.CPF
     };
 
     if (customer.login && customer.login.email) {
@@ -114,7 +113,7 @@ const CustomerEdit = (props) => {
       const { data } = await api.put(
         `/customer/${customer.CODIGO}`,
         param,
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU5NTQ0NjEzNn0.QxdKlIrVUT9UfVyFfrBKWJQyBQq_CMJHrTyx3XZrVO8'
+        auth.token
       );
 
       if (!data.status) {
@@ -155,7 +154,7 @@ const CustomerEdit = (props) => {
             <CardHeader
               subheader="Editar dados cadastrais do cliente"
               title="Cadastro de cliente"
-              avatar={(
+              avatar={
                 <IconButton
                   size="small"
                   color="primary"
@@ -163,7 +162,7 @@ const CustomerEdit = (props) => {
                 >
                   <ArrowBackIcon />
                 </IconButton>
-              )}
+              }
             />
             <Divider />
             {
@@ -186,44 +185,40 @@ const CustomerEdit = (props) => {
               ) : (
                 <CardContent>
                   <Grid container spacing={6} wrap="wrap">
-                    {
-                      hasSuccess && (
-                        <Grid
-                          item
-                          md={12}
-                          sm={12}
-                          xs={12}
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'column'
-                          }}
-                        >
-                          <Alert severity="success">
-                            <AlertTitle>Sucesso</AlertTitle>
-                            {hasSuccess}
-                          </Alert>
-                        </Grid>
-                      )
-                    }
-                    {
-                      hasError && (
-                        <Grid
-                          item
-                          md={12}
-                          sm={12}
-                          xs={12}
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'column'
-                          }}
-                        >
-                          <Alert severity="error">
-                            <AlertTitle>Atenção</AlertTitle>
-                            {hasError}
-                          </Alert>
-                        </Grid>
-                      )
-                    }
+                    {hasSuccess && (
+                      <Grid
+                        item
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        <Alert severity="success">
+                          <AlertTitle>Sucesso</AlertTitle>
+                          {hasSuccess}
+                        </Alert>
+                      </Grid>
+                    )}
+                    {hasError && (
+                      <Grid
+                        item
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        <Alert severity="error">
+                          <AlertTitle>Atenção</AlertTitle>
+                          {hasError}
+                        </Alert>
+                      </Grid>
+                    )}
                     <Grid
                       item
                       md={12}
@@ -248,7 +243,10 @@ const CustomerEdit = (props) => {
                         label="Nome"
                         name="nome"
                         onChange={(event) => {
-                          setCustomer({ ...customer, NOME: event.target.value });
+                          setCustomer({
+                            ...customer,
+                            NOME: event.target.value
+                          });
                         }}
                         required
                         value={customer.NOME}
@@ -296,7 +294,10 @@ const CustomerEdit = (props) => {
                         label="E-mail sistema"
                         name="email"
                         onChange={(event) => {
-                          setCustomer({ ...customer, EMAIL: event.target.value });
+                          setCustomer({
+                            ...customer,
+                            EMAIL: event.target.value
+                          });
                         }}
                         required
                         value={customer.EMAIL}
@@ -352,7 +353,10 @@ const CustomerEdit = (props) => {
                         label="Rua"
                         name="rua"
                         onChange={(event) => {
-                          setCustomer({ ...customer, ENDE_R: event.target.value });
+                          setCustomer({
+                            ...customer,
+                            ENDE_R: event.target.value
+                          });
                         }}
                         required
                         value={customer.ENDE_R}
@@ -376,7 +380,10 @@ const CustomerEdit = (props) => {
                         label="Bairro"
                         name="bairro"
                         onChange={(event) => {
-                          setCustomer({ ...customer, BAIR_R: event.target.value });
+                          setCustomer({
+                            ...customer,
+                            BAIR_R: event.target.value
+                          });
                         }}
                         required
                         value={customer.BAIR_R}
@@ -408,7 +415,13 @@ const CustomerEdit = (props) => {
                         label="E-mail"
                         name="email"
                         onChange={(event) => {
-                          setCustomer({ ...customer, login: { ...customer.login, email: event.target.value } });
+                          setCustomer({
+                            ...customer,
+                            login: {
+                              ...customer.login,
+                              email: event.target.value
+                            }
+                          });
                         }}
                         required
                         value={customer.login ? customer.login.email : ''}

@@ -4,7 +4,7 @@ const apiAxio = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
   }
 });
 
@@ -43,7 +43,8 @@ class Api {
 
       const bodyEnd = {
         ...body,
-        HTTP_X_AUTH_TOKEN: 'fGtaUSg0Q2J8MC9XU2UxNSo4JnJ6c2JiT2hZe2JXaWMyNFVXdlZ7X3F2OG9iNDxYbG1LR3VeK0A8JD02UDtp'
+        HTTP_X_AUTH_TOKEN:
+          'fGtaUSg0Q2J8MC9XU2UxNSo4JnJ6c2JiT2hZe2JXaWMyNFVXdlZ7X3F2OG9iNDxYbG1LR3VeK0A8JD02UDtp'
       };
 
       return apiAxio.post(url, bodyEnd, { headers });
@@ -82,7 +83,8 @@ class Api {
 
       const bodyEnd = {
         ...body,
-        HTTP_X_AUTH_TOKEN: 'fGtaUSg0Q2J8MC9XU2UxNSo4JnJ6c2JiT2hZe2JXaWMyNFVXdlZ7X3F2OG9iNDxYbG1LR3VeK0A8JD02UDtp'
+        HTTP_X_AUTH_TOKEN:
+          'fGtaUSg0Q2J8MC9XU2UxNSo4JnJ6c2JiT2hZe2JXaWMyNFVXdlZ7X3F2OG9iNDxYbG1LR3VeK0A8JD02UDtp'
       };
 
       return apiAxio.put(url, bodyEnd, { headers });
