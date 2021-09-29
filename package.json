@@ -12,7 +12,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./",
-    "lint-fix": "eslint ./ --fix"
+    "lint-fix": "eslint ./ --fix",
+    "deploy": "aws s3 sync build/ s3://unilutus.painel.tecworks.com.br --acl public-read --profile default"
   },
   "eslintConfig": {
     "extends": "react-app"
