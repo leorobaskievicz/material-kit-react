@@ -6,7 +6,8 @@ import {
   Avatar,
   Alert,
   Box,
-  Card, IconButton,
+  Card,
+  IconButton,
   // Checkbox,
   Table,
   TableBody,
@@ -44,10 +45,10 @@ const PromocaoListResult = ({
         confirma: {
           text: 'Sim',
           value: true,
-          closeModal: false,
+          closeModal: false
         }
       },
-      dangerMode: true,
+      dangerMode: true
     })
       .then((willDelete) => {
         if (!willDelete) {
@@ -63,10 +64,11 @@ const PromocaoListResult = ({
         if (!data.status) {
           swal('Atenção', data.msg, 'error');
         } else {
-          swal('Sucesso', 'Promoção excluída com sucesso', 'success')
-            .then(() => {
+          swal('Sucesso', 'Promoção excluída com sucesso', 'success').then(
+            () => {
               window.location.reload();
-            });
+            }
+          );
         }
       })
       .catch((e) => {
@@ -103,8 +105,8 @@ const PromocaoListResult = ({
                     </Alert>
                   </TableCell>
                 </TableRow>
-              )
-                : promocoes.map((promo) => (
+              ) : (
+                promocoes.map((promo) => (
                   <TableRow hover key={promo.id}>
                     <TableCell>{promo.id}</TableCell>
                     <TableCell>
@@ -119,7 +121,9 @@ const PromocaoListResult = ({
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{moment(promo.data_inicio).format('DD/MM/YYYY')}</TableCell>
+                    <TableCell>
+                      {moment(promo.data_inicio).format('DD/MM/YYYY')}
+                    </TableCell>
                     <TableCell>
                       {moment(promo.data_final).format('DD/MM/YYYY')}
                     </TableCell>
@@ -130,17 +134,16 @@ const PromocaoListResult = ({
                           <VisibilityIcon />
                         </IconButton>
                       </Link>
-                      <Link to={`/app/promo/${promo.id}/edit`}>
-                        <IconButton size="small">
-                          <EditIcon />
-                        </IconButton>
-                      </Link>
-                      <IconButton size="small" onClick={() => handleDelete(promo)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(promo)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </Box>
@@ -154,7 +157,11 @@ const PromocaoListResult = ({
         page={page - 1}
         rowsPerPage={perPage}
         rowsPerPageOptions={[5, 10, 25, 50, 75, 100]}
-        labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : to}`}
+        labelDisplayedRows={
+          (
+            { from, to, count } // eslint-disable-next-line
+          ) => `${from}-${to} de ${count !== -1 ? count : to}` // eslint-disable-next-line
+        } // eslint-disable-next-line
         labelRowsPerPage="Linhas por página:"
       />
     </Card>
@@ -167,7 +174,7 @@ PromocaoListResult.propTypes = {
   setPage: PropTypes.func.isRequired,
   perPage: PropTypes.number.isRequired,
   setPerPage: PropTypes.func.isRequired,
-  total: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired
 };
 
 export default PromocaoListResult;

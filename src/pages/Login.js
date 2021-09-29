@@ -11,16 +11,16 @@ import {
   TextField,
   Typography
 } from '@material-ui/core';
-import FacebookIcon from '../icons/Facebook';
-import GoogleIcon from '../icons/Google';
+import Api from '../utils/api';
 
 const Login = () => {
   const navigate = useNavigate();
+  const api = new Api();
 
   return (
     <>
       <Helmet>
-        <title>Login | Material Kit</title>
+        <title>Login | Unilutus</title>
       </Helmet>
       <Box
         sx={{
@@ -34,15 +34,38 @@ const Login = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'demo@devias.io',
-              password: 'Password123'
+              email: '',
+              password: ''
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-              password: Yup.string().max(255).required('Password is required')
+              email: Yup.string().max(255).required('Usuario é obrigatório'),
+              password: Yup.string().max(255).required('Senha é obrigatório')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={async (values, actions) => {
+              actions.setSubmitting(true);
+
+              const param = {
+                usuario: values.email,
+                senha: values.password
+              };
+
+              try {
+                const { data } = await api.post('/sessions-painel', param);
+
+                if (!data.token) {
+                  throw new Error('Login inválido');
+                }
+
+                navigate('/app/dashboard', { replace: true });
+              } catch (e) {
+                if (process.env.REACT_APP_ENVIROMENT === 'development') {
+                  console.error(e);
+                }
+
+                actions.setFieldError('email', 'Login inválido');
+              } finally {
+                actions.setSubmitting(false);
+              }
             }}
           >
             {({
@@ -55,81 +78,45 @@ const Login = () => {
               values
             }) => (
               <form onSubmit={handleSubmit}>
+                <Box
+                  sx={{
+                    mb: 3,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  <img
+                    alt="Logo"
+                    src="/static/logo-unilutus.png"
+                    style={{
+                      width: 250,
+                      height: 'auto'
+                    }}
+                  />
+                </Box>
                 <Box sx={{ mb: 3 }}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
-                    Sign in
+                  <Typography color="textPrimary" variant="h2">
+                    Login
                   </Typography>
                   <Typography
                     color="textSecondary"
                     gutterBottom
                     variant="body2"
                   >
-                    Sign in on the internal platform
-                  </Typography>
-                </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box
-                  sx={{
-                    pb: 1,
-                    pt: 3
-                  }}
-                >
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    or login with email address
+                    Acessar painel administrativo app Unilutus
                   </Typography>
                 </Box>
                 <TextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
                   helperText={touched.email && errors.email}
-                  label="Email Address"
+                  label="Usuário"
                   margin="normal"
                   name="email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  type="email"
+                  type="text"
                   value={values.email}
                   variant="outlined"
                 />
@@ -137,7 +124,7 @@ const Login = () => {
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
                   helperText={touched.password && errors.password}
-                  label="Password"
+                  label="Senha"
                   margin="normal"
                   name="password"
                   onBlur={handleBlur}
@@ -155,19 +142,9 @@ const Login = () => {
                     type="submit"
                     variant="contained"
                   >
-                    Sign in now
+                    Entrar
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Don&apos;t have an account?
-                  {' '}
-                  <Link component={RouterLink} to="/register" variant="h6" underline="hover">
-                    Sign up
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
