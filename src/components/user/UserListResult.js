@@ -40,7 +40,7 @@ const UserListResult = ({
   const handleDelete = async (promo) => {
     swal({
       title: 'Confirma a exclusão?',
-      text: `Deseja realmente apagar a promoção ${promo.id} - ${promo.titulo}?`,
+      text: `Deseja realmente apagar a usuário ${promo.id} - ${promo.usuario}?`,
       icon: 'warning',
       buttons: {
         cancel: 'Não',
@@ -57,20 +57,20 @@ const UserListResult = ({
           throw null; // eslint-disable-line
         }
 
-        return api.delete(`/promocao/${promo.id}`, auth.token);
+        return api.delete(`/user-painel/${promo.id}`, auth.token);
       })
       .then(({ data }) => {
         if (!data.status) {
           swal('Atenção', data.msg, 'error');
         } else {
-          swal('Sucesso', 'Promoção excluída com sucesso', 'success').then(() => {
+          swal('Sucesso', 'Usuário excluído com sucesso', 'success').then(() => {
             window.location.reload();
           });
         }
       })
       .catch((e) => {
         if (e) {
-          swal('Atenção', 'Não foi possível excluir promoção', 'error');
+          swal('Atenção', 'Não foi possível excluir usuário', 'error');
         } else {
           swal.stopLoading();
           swal.close();
@@ -86,10 +86,9 @@ const UserListResult = ({
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Título</TableCell>
-                <TableCell>Data início</TableCell>
-                <TableCell>Data final</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell>Nome</TableCell>
+                <TableCell>Usuário</TableCell>
+                <TableCell>Data Cadastro</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
@@ -97,7 +96,7 @@ const UserListResult = ({
               {promocoes.length <= 0 ? (
                 <TableRow key={0}>
                   <TableCell colSpan={6}>
-                    <Alert severity="warning">Nenhuma promoção localizada</Alert>
+                    <Alert severity="warning">Nenhum usuário localizada</Alert>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -112,19 +111,21 @@ const UserListResult = ({
                         }}
                       >
                         <Typography color="textPrimary" variant="body1">
-                          {promo.titulo}
+                          {promo.nome}
                         </Typography>
                       </Box>
                     </TableCell>
+                    <TableCell>{promo.usuario}</TableCell>
+                    <TableCell>{moment(promo.cadastro).format('DD/MM/YYYY')}</TableCell>
                     <TableCell>
-                      {moment(promo.data_inicio).format('DD/MM/YYYY')}
-                    </TableCell>
-                    <TableCell>{moment(promo.data_final).format('DD/MM/YYYY')}</TableCell>
-                    <TableCell>{promo.status}</TableCell>
-                    <TableCell>
-                      <Link to={`/app/promo/${promo.id}/view`}>
+                      <Link to={`/app/users/${promo.id}/view`}>
                         <IconButton size="small">
                           <VisibilityIcon />
+                        </IconButton>
+                      </Link>
+                      <Link to={`/app/users/${promo.id}/edit`}>
+                        <IconButton size="small">
+                          <EditIcon />
                         </IconButton>
                       </Link>
                       <IconButton size="small" onClick={() => handleDelete(promo)}>

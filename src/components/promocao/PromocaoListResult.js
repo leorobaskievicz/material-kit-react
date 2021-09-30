@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
 import swal from 'sweetalert';
@@ -63,11 +64,9 @@ const PromocaoListResult = ({
         if (!data.status) {
           swal('Atenção', data.msg, 'error');
         } else {
-          swal('Sucesso', 'Promoção excluída com sucesso', 'success').then(
-            () => {
-              window.location.reload();
-            }
-          );
+          swal('Sucesso', 'Promoção excluída com sucesso', 'success').then(() => {
+            window.location.reload();
+          });
         }
       })
       .catch((e) => {
@@ -99,9 +98,7 @@ const PromocaoListResult = ({
               {promocoes.length <= 0 ? (
                 <TableRow key={0}>
                   <TableCell colSpan={6}>
-                    <Alert severity="warning">
-                      Nenhuma promoção localizada
-                    </Alert>
+                    <Alert severity="warning">Nenhuma promoção localizada</Alert>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -123,9 +120,7 @@ const PromocaoListResult = ({
                     <TableCell>
                       {moment(promo.data_inicio).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>
-                      {moment(promo.data_final).format('DD/MM/YYYY')}
-                    </TableCell>
+                    <TableCell>{moment(promo.data_final).format('DD/MM/YYYY')}</TableCell>
                     <TableCell>{promo.status}</TableCell>
                     <TableCell>
                       <Link to={`/app/promo/${promo.id}/view`}>
@@ -133,12 +128,14 @@ const PromocaoListResult = ({
                           <VisibilityIcon />
                         </IconButton>
                       </Link>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDelete(promo)}
-                      >
+                      <IconButton size="small" onClick={() => handleDelete(promo)}>
                         <DeleteIcon />
                       </IconButton>
+                      <Link to={`/app/promo/${promo.id}/users`}>
+                        <IconButton size="small">
+                          <GroupAddIcon />
+                        </IconButton>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))

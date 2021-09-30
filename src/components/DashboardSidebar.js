@@ -42,11 +42,11 @@ const items = [
     icon: ShoppingBagIcon,
     title: 'Promoções'
   },
-  // {
-  //   href: '/app/users',
-  //   icon: DatabaseIcon,
-  //   title: 'Usuários'
-  // },
+  {
+    href: '/app/users',
+    icon: DatabaseIcon,
+    title: 'Usuários Painel'
+  },
   {
     href: '/app/settings',
     icon: SettingsIcon,
@@ -87,7 +87,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           p: 2
         }}
       >
-        <Avatar
+        {/* <Avatar
           component={RouterLink}
           src={user.avatar}
           sx={{
@@ -96,12 +96,12 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
             height: 64
           }}
           to="/app/account"
-        />
+        /> */}
         <Typography color="textPrimary" variant="h5">
           {auth.user.usuario}
         </Typography>
         {/* <Typography color="textSecondary" variant="body2">
-          {user.jobTitle}
+          {Usuário logado}
         </Typography> */}
       </Box>
       <Divider />

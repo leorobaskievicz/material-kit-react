@@ -23,7 +23,7 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
         justifyContent: 'flex-end'
       }}
     >
-      <RouterLink to="/app/promo/novo">
+      <RouterLink to="/app/users/novo">
         <Button size="medium" color="primary" variant="contained">
           <AddIcon />
           Cadastrar
@@ -45,7 +45,7 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Pesquisar promoções"
+              placeholder="Pesquisar usuários"
               variant="outlined"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
