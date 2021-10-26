@@ -9,6 +9,11 @@ import PromocaoView from './pages/PromocaoView';
 import PromocaoEdit from './pages/PromocaoEdit';
 import PromocaoAdd from './pages/PromocaoAdd';
 import PromocaoUser from './pages/PromocaoUser';
+import VoucherList from './pages/VoucherList';
+import VoucherView from './pages/VoucherView';
+import VoucherEdit from './pages/VoucherEdit';
+import VoucherAdd from './pages/VoucherAdd';
+import VoucherUser from './pages/VoucherUser';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -35,6 +40,11 @@ const routes = [
       { path: 'promo/:id/view', element: <PromocaoView /> },
       { path: 'promo/:id/edit', element: <PromocaoEdit /> },
       { path: 'promo/:id/users', element: <PromocaoUser /> },
+      { path: 'voucher', element: <VoucherList /> },
+      { path: 'voucher/novo', element: <VoucherAdd /> },
+      { path: 'voucher/:id/view', element: <VoucherView /> },
+      { path: 'voucher/:id/edit', element: <VoucherEdit /> },
+      { path: 'voucher/:id/users', element: <VoucherUser /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'users', element: <UserList /> },
       { path: 'users/novo', element: <UserAdd /> },

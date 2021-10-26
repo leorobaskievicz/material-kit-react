@@ -17,7 +17,8 @@ import {
   ShoppingBag as ShoppingBagIcon,
   Users as UsersIcon,
   Database as DatabaseIcon,
-  File as FileIcon
+  File as FileIcon,
+  Gift as GiftIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -47,6 +48,11 @@ const items = [
     href: '/app/promo',
     icon: ShoppingBagIcon,
     title: 'Promoções'
+  },
+  {
+    href: '/app/voucher',
+    icon: GiftIcon,
+    title: 'Vouchers'
   },
   {
     href: '/app/users',
