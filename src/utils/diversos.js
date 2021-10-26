@@ -194,12 +194,17 @@ export default class Diversos {
   }
 
   maskPreco(text) {
-    let money = text.replace(/[^\d]/g, '');
-    let tmp = money + "";
-    tmp = money.replace(/([0-9]{2})$/g, ",$1");
-    if( tmp.length > 6 )
-      tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
-    return tmp;
+
+    // if (typeof text !== 'string') {
+    //   text = text.toString();
+    // }
+
+    // let money = text.replace(/[^\d]/g, '');
+    // let tmp = money + "";
+    // tmp = money.replace(/([0-9]{2})$/g, ",$1");
+    // if( tmp.length > 6 )
+    //   tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(text);
   }
 
   maskCPF(text) {

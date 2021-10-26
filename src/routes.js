@@ -17,12 +17,16 @@ import UserList from './pages/UserList';
 import UserAdd from './pages/UserAdd';
 import UserView from './pages/UserView';
 import UserEdit from './pages/UserEdit';
+import CustomerBillList from './pages/CustomerBillList';
+import CustomerBillView from './pages/CustomerBillView';
 
 const routes = [
   {
     path: 'app',
     element: <DashboardLayout />,
     children: [
+      { path: 'customers/bill', element: <CustomerBillList /> },
+      { path: 'customers/bill/:id/view', element: <CustomerBillView /> },
       { path: 'customers', element: <CustomerList /> },
       { path: 'customer/:id/view', element: <CustomerView /> },
       { path: 'customer/:id/edit', element: <CustomerEdit /> },
