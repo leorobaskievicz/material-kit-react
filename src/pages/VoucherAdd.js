@@ -21,6 +21,7 @@ import {
   FormHelperText
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import { Editor } from '@tinymce/tinymce-react';
 import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
@@ -38,6 +39,10 @@ const VoucherAdd = (props) => {
   const [hasError, setHasError] = useState(false);
   const [hasSuccess, setHasSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [clienteHasError, setClienteHasError] = useState(false);
+  const [clienteHasSuccess, setClienteHasSuccess] = useState(false);
+  const [clienteIsLoading, setClienteIsLoading] = useState(false);
+  const [clientePesquisa, setClientePesquisa] = useState(null);
 
   const postVoucher = async (form, actions) => {
     setIsLoading(true);
@@ -96,6 +101,37 @@ const VoucherAdd = (props) => {
       } finally {
         setIsLoading(false);
         actions.setSubmitting(false);
+      }
+    }
+  };
+
+  const handleSearchCliente = async (param) => {
+    setClienteIsLoading(true);
+    setClienteHasSuccess(false);
+    setClienteHasError(false);
+
+    if (!param) {
+      setClienteHasError('Informe um parametro de busca no campo Cliente.');
+      setClienteIsLoading(false);
+    } else {
+      try {
+        const { data } = await api.post('/customer/search', { termo: param }, auth.token);
+
+        if (!data.status) {
+          throw new Error(data.msg);
+        }
+
+        setClienteHasSuccess(true);
+        setClientePesquisa(data.msg);
+      } catch (e) {
+        if (process.env.REACT_APP_ENVIROMENT !== 'production') {
+          console.error(e);
+        }
+
+        setClienteHasError(e.message);
+        setClientePesquisa(null);
+      } finally {
+        setClienteIsLoading(false);
       }
     }
   };
@@ -382,6 +418,7 @@ const VoucherAdd = (props) => {
                           labelId="demo-simple-select-outlined-cliente-destino-label"
                           id="demo-simple-select-outlined-cliente-destino"
                           label="Cliente"
+                          name="clienteDestino"
                           error={Boolean(touched.clienteDestino && errors.clienteDestino)}
                           helperText={touched.clienteDestino && errors.clienteDestino}
                           value={values.clienteDestino}
@@ -394,24 +431,59 @@ const VoucherAdd = (props) => {
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item md={9} sm={9} xs={12}>
-                      <TextField
-                        fullWidth
-                        error={Boolean(touched.cliente && errors.cliente)}
-                        helperText={touched.cliente && errors.cliente}
-                        value={values.cliente}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        disabled={isSubmitting}
-                        label="Cliente"
-                        name="Cliente"
-                        variant="outlined"
-                      />
-                    </Grid>
+                    {values.clienteDestino === 'E' && (
+                      <>
+                        <Grid item md={9} sm={9} xs={12}>
+                          <TextField
+                            fullWidth
+                            error={Boolean(touched.cliente && errors.cliente)}
+                            helperText={touched.cliente && errors.cliente}
+                            value={values.cliente}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            disabled={isSubmitting || clienteIsLoading}
+                            label="Cliente"
+                            name="cliente"
+                            variant="outlined"
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton
+                                  disabled={clienteIsLoading}
+                                  onClick={() => handleSearchCliente(values.cliente)}
+                                >
+                                  <SearchOutlinedIcon />
+                                </IconButton>
+                              )
+                            }}
+                          />
+                        </Grid>
+                        <Grid item md={12} sm={12} xs={12}>
+                          {() => {
+                            if (clienteIsLoading) {
+                              return (
+                                <span>Pesquisando cliente, por favor aguarde...</span>
+                              );
+                            }
+
+                            if (clienteHasError) {
+                              return <span>{clienteHasError}</span>;
+                            }
+
+                            if (clientePesquisa && clienteHasSuccess) {
+                              return (
+                                <span>{`Cliente selecionado: ${clientePesquisa.NOME}`}</span>
+                              );
+                            }
+
+                            return null;
+                          }}
+                        </Grid>
+                      </>
+                    )}
                     <Grid
                       item
-                      md={6}
-                      sm={6}
+                      md={12}
+                      sm={12}
                       xs={12}
                       sx={{
                         display: 'flex',
@@ -431,6 +503,7 @@ const VoucherAdd = (props) => {
                           value={values.status}
                           onBlur={handleBlur}
                           onChange={handleChange}
+                          name="status"
                           disabled={isSubmitting}
                         >
                           <MenuItem value="Ativo">Ativo</MenuItem>
