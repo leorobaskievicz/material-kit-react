@@ -121,8 +121,10 @@ const VoucherAdd = (props) => {
           throw new Error(data.msg);
         }
 
-        setClienteHasSuccess(true);
-        setClientePesquisa(data.msg);
+        if (data.msg.length === 1) {
+          setClienteHasSuccess(true);
+          setClientePesquisa(data.msg[0]);
+        }
       } catch (e) {
         if (process.env.REACT_APP_ENVIROMENT !== 'production') {
           console.error(e);
@@ -458,25 +460,9 @@ const VoucherAdd = (props) => {
                           />
                         </Grid>
                         <Grid item md={12} sm={12} xs={12}>
-                          {() => {
-                            if (clienteIsLoading) {
-                              return (
-                                <span>Pesquisando cliente, por favor aguarde...</span>
-                              );
-                            }
-
-                            if (clienteHasError) {
-                              return <span>{clienteHasError}</span>;
-                            }
-
-                            if (clientePesquisa && clienteHasSuccess) {
-                              return (
-                                <span>{`Cliente selecionado: ${clientePesquisa.NOME}`}</span>
-                              );
-                            }
-
-                            return null;
-                          }}
+                          {clientePesquisa && (
+                            <span>{`Cliente selecionado: ${clientePesquisa.NOME}`}</span>
+                          )}
                         </Grid>
                       </>
                     )}
