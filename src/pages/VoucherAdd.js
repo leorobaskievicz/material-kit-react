@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useSetState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import {
   Box,
@@ -18,8 +18,22 @@ import {
   MenuItem,
   Alert,
   AlertTitle,
-  FormHelperText
+  FormHelperText,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  ListItemIcon,
+  ListSubheader,
+  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@material-ui/core';
+import FolderIcon from '@material-ui/icons/Folder';
+import CheckIcon from '@material-ui/icons/Check';
+import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import { Editor } from '@tinymce/tinymce-react';
@@ -30,11 +44,15 @@ import * as YupVoucherAdd from 'yup';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import { useSelector } from 'react-redux';
+import swal from 'sweetalert';
+import getInitials from '../utils/getInitials';
 import Api from '../utils/api';
+import Diversos from '../utils/diversos';
 
 const VoucherAdd = (props) => {
   const history = useNavigate();
   const api = new Api();
+  const diversos = new Diversos();
   const auth = useSelector((state) => state.auth);
   const [hasError, setHasError] = useState(false);
   const [hasSuccess, setHasSuccess] = useState(false);
@@ -42,7 +60,9 @@ const VoucherAdd = (props) => {
   const [clienteHasError, setClienteHasError] = useState(false);
   const [clienteHasSuccess, setClienteHasSuccess] = useState(false);
   const [clienteIsLoading, setClienteIsLoading] = useState(false);
-  const [clientePesquisa, setClientePesquisa] = useState(null);
+  const [clienteSelected, setClienteSelected] = useState([]);
+  const [modalClienteSelectedList, setModalClienteSelectedList] = useState([]);
+  const [modalClienteSelected, setModalClienteSelected] = useState(false);
 
   const postVoucher = async (form, actions) => {
     setIsLoading(true);
@@ -68,6 +88,17 @@ const VoucherAdd = (props) => {
       param.append('dataini', moment(form.dataini).format('YYYY-MM-DD'));
       param.append('datafim', moment(form.datafim).format('YYYY-MM-DD'));
       param.append('status', 'Ativo');
+      param.append('tipoCliente', form.clienteDestino);
+
+      if (form.clienteDestino === 'E' && clienteSelected.length > 0) {
+        const tmp = [];
+
+        for (let i = 0; i < clienteSelected.length; i++) {
+          tmp.push(clienteSelected[i].CODIGO);
+        }
+
+        param.append('clientes', JSON.stringify(tmp));
+      }
 
       if (form.banner1) {
         param.append(
@@ -91,6 +122,7 @@ const VoucherAdd = (props) => {
         }
 
         setHasSuccess('Voucher salvo com sucesso');
+        setClienteSelected([]);
         actions.resetForm();
       } catch (e) {
         if (process.env.REACT_APP_ENVIROMENT !== 'production') {
@@ -121,9 +153,14 @@ const VoucherAdd = (props) => {
           throw new Error(data.msg);
         }
 
-        if (data.msg.length === 1) {
+        if (data.msg.length <= 0) {
+          swal('Atenção', 'Nenhum cliente localizado', 'warning');
+        } else if (data.msg.length === 1) {
           setClienteHasSuccess(true);
-          setClientePesquisa(data.msg[0]);
+          setClienteSelected([...clienteSelected, data.msg[0]]);
+        } else {
+          setModalClienteSelectedList(data.msg);
+          setModalClienteSelected(true);
         }
       } catch (e) {
         if (process.env.REACT_APP_ENVIROMENT !== 'production') {
@@ -131,12 +168,92 @@ const VoucherAdd = (props) => {
         }
 
         setClienteHasError(e.message);
-        setClientePesquisa(null);
       } finally {
         setClienteIsLoading(false);
       }
     }
   };
+
+  const handleDeleteClienteSelected = (row, index) => {
+    let tmp = [...clienteSelected]; // eslint-disable-line prefer-const
+    tmp.splice(index, 1);
+    setClienteSelected(tmp);
+  };
+
+  const showModalClienteSelectedList = () => (
+    <Dialog fullWidth size="lg" scroll="paper" open={modalClienteSelected}>
+      <DialogTitle>Selecione o cliente abaixo</DialogTitle>
+      <DialogContent>
+        <List
+          dense
+          sx={{
+            width: '100%',
+            bgcolor: 'background.paper'
+          }}
+        >
+          {modalClienteSelectedList.length <= 0 ? (
+            <ListItem>
+              <ListItemText>Nenhum cliente localizado</ListItemText>
+            </ListItem>
+          ) : (
+            modalClienteSelectedList.map((row, index) => (
+              <>
+                <ListItem
+                  button
+                  onClick={() => {
+                    setClienteSelected([...clienteSelected, row]);
+                  }}
+                >
+                  <ListItemAvatar>
+                    <IconButton
+                      onClick={() => {
+                        setClienteSelected([...clienteSelected, row]);
+                        // setModalClienteSelected(false);
+                      }}
+                    >
+                      {clienteSelected.filter((reg) => reg.CODIGO === row.CODIGO).length >
+                      0 ? (
+                        <CheckIcon color="green" />
+                      ) : (
+                        <Avatar>{getInitials(row.NOME)}</Avatar>
+                      )}
+                    </IconButton>
+                  </ListItemAvatar>
+                  <div>
+                    <ListItemText
+                      primary={row.NOME}
+                      secondary={`Código: ${row.CODIGO}`}
+                    />
+                    {row.CPF && row.CPF > 0 && (
+                      <ListItemText secondary={`CPF: ${diversos.maskCPF(row.CPF)}`} />
+                    )}
+                    <ListItemText secondary={`E-mail: ${row.EMAIL}`} />
+                  </div>
+                </ListItem>
+                {index < modalClienteSelectedList.length - 1 && (
+                  <Divider variant="inset" component="li" />
+                )}
+              </>
+            ))
+          )}
+        </List>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="primary"
+          fullWidth
+          size="large"
+          type="button"
+          variant="contained"
+          onClick={() => {
+            setModalClienteSelected(false);
+          }}
+        >
+          Fechar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
     <Formik
@@ -443,6 +560,13 @@ const VoucherAdd = (props) => {
                             value={values.cliente}
                             onBlur={handleBlur}
                             onChange={handleChange}
+                            onKeyUp={(event) => {
+                              event.preventDefault();
+                              if (event.keyCode === 13) {
+                                handleSearchCliente(values.cliente);
+                                setFieldValue('cliente', '');
+                              }
+                            }}
                             disabled={isSubmitting || clienteIsLoading}
                             label="Cliente"
                             name="cliente"
@@ -451,7 +575,10 @@ const VoucherAdd = (props) => {
                               endAdornment: (
                                 <IconButton
                                   disabled={clienteIsLoading}
-                                  onClick={() => handleSearchCliente(values.cliente)}
+                                  onClick={() => {
+                                    handleSearchCliente(values.cliente);
+                                    setFieldValue('cliente', '');
+                                  }}
                                 >
                                   <SearchOutlinedIcon />
                                 </IconButton>
@@ -460,9 +587,53 @@ const VoucherAdd = (props) => {
                           />
                         </Grid>
                         <Grid item md={12} sm={12} xs={12}>
-                          {clientePesquisa && (
-                            <span>{`Cliente selecionado: ${clientePesquisa.NOME}`}</span>
-                          )}
+                          <List
+                            dense
+                            sx={{
+                              width: '100%',
+                              bgcolor: 'background.paper'
+                            }}
+                            subheader={
+                              <ListSubheader component="div" id="nested-list-subheader">
+                                Clientes selecionados
+                              </ListSubheader>
+                            }
+                          >
+                            {clienteSelected.length <= 0 ? (
+                              <ListItem>
+                                <ListItemText primary="Nenhum cliente selecionado" />
+                              </ListItem>
+                            ) : (
+                              clienteSelected.map((row, index) => (
+                                <>
+                                  <ListItem
+                                    secondaryAction={
+                                      <IconButton
+                                        edge="end"
+                                        aria-label="delete"
+                                        onClick={() =>
+                                          handleDeleteClienteSelected(row, index)
+                                        }
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    }
+                                  >
+                                    <ListItemAvatar>
+                                      <Avatar>{getInitials(row.NOME)}</Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                      primary={row.NOME}
+                                      secondary={`Código: ${row.CODIGO}`}
+                                    />
+                                  </ListItem>
+                                  {index < clienteSelected.length - 1 && (
+                                    <Divider variant="inset" component="li" />
+                                  )}
+                                </>
+                              ))
+                            )}
+                          </List>
                         </Grid>
                       </>
                     )}
@@ -524,6 +695,7 @@ const VoucherAdd = (props) => {
               </Card>
             </Container>
           </Box>
+          {showModalClienteSelectedList()}
         </form>
       )}
     </Formik>

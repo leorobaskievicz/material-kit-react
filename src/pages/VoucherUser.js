@@ -125,22 +125,45 @@ const VoucherUser = (props) => {
                     <Table>
                       <TableHead>
                         <TableRow>
+                          <TableCell>Status</TableCell>
                           <TableCell>Contrato</TableCell>
                           <TableCell>Nome</TableCell>
                           <TableCell>E-mail</TableCell>
                           <TableCell>Celular</TableCell>
                           <TableCell>Inscrição</TableCell>
+                          <TableCell>Utilizado em</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {voucher.inscritos.map((row) => (
                           <TableRow hover key={row.id}>
-                            <TableCell>{row.cliente}</TableCell>
-                            <TableCell>{row.clienteDados.NOME}</TableCell>
-                            <TableCell>{row.clienteDados.login.email}</TableCell>
-                            <TableCell>{row.clienteDados.FONE_R}</TableCell>
                             <TableCell>
-                              {moment(row.cadastro).format('DD/MM/YYYY HH:mm:ss')}
+                              {!row.data_utilizado ||
+                              !moment(row.data_utilizado).isValid()
+                                ? 'Não utilizado'
+                                : 'Utilizado'}
+                            </TableCell>
+                            <TableCell>{row.cliente}</TableCell>
+                            <TableCell>
+                              {row.clienteDados ? row.clienteDados.NOME : ''}
+                            </TableCell>
+                            <TableCell>
+                              {row.clienteDados && row.clienteDados.login
+                                ? row.clienteDados.login.email
+                                : ''}
+                            </TableCell>
+                            <TableCell>
+                              {row.clienteDados ? row.clienteDados.FONE_R : ''}
+                            </TableCell>
+                            <TableCell>
+                              {moment(row.cadastro).isValid()
+                                ? moment(row.cadastro).format('DD/MM/YYYY HH:mm:ss')
+                                : ''}
+                            </TableCell>
+                            <TableCell>
+                              {moment(row.data_utilizado).isValid()
+                                ? moment(row.data_utilizado).format('DD/MM/YYYY HH:mm:ss')
+                                : ''}
                             </TableCell>
                           </TableRow>
                         ))}

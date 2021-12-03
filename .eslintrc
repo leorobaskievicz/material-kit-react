@@ -4,7 +4,7 @@
     "es6": true,
     "browser": true
   },
-  "extends": ["airbnb"],
+  "extends": ["airbnb", "prettier"],
   "settings": {
     "import/resolver": {
       "node": {
@@ -13,7 +13,9 @@
       }
     }
   },
+  "plugins": ["prettier"],
   "rules": {
+    // "prettier/prettier": "error",
     "no-unused-vars": "off",
     "comma-dangle": "off",
     "jsx-a11y/anchor-is-valid": "off",
