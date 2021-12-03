@@ -19,14 +19,15 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
 import swal from 'sweetalert';
 import Api from '../../utils/api';
 import getInitials from '../../utils/getInitials';
 
-const UserListResult = ({
-  promocoes,
+const VoucherListResult = ({
+  vouchers,
   page,
   setPage,
   perPage,
@@ -40,7 +41,7 @@ const UserListResult = ({
   const handleDelete = async (promo) => {
     swal({
       title: 'Confirma a exclusão?',
-      text: `Deseja realmente apagar a usuário ${promo.id} - ${promo.usuario}?`,
+      text: `Deseja realmente apagar o voucher ${promo.id} - ${promo.titulo}?`,
       icon: 'warning',
       buttons: {
         cancel: 'Não',
@@ -57,20 +58,20 @@ const UserListResult = ({
           throw null; // eslint-disable-line
         }
 
-        return api.delete(`/user-painel/${promo.id}`, auth.token);
+        return api.delete(`/voucher/${promo.id}`, auth.token);
       })
       .then(({ data }) => {
         if (!data.status) {
           swal('Atenção', data.msg, 'error');
         } else {
-          swal('Sucesso', 'Usuário excluído com sucesso', 'success').then(() => {
+          swal('Sucesso', 'Voucher excluído com sucesso', 'success').then(() => {
             window.location.reload();
           });
         }
       })
       .catch((e) => {
         if (e) {
-          swal('Atenção', 'Não foi possível excluir usuário', 'error');
+          swal('Atenção', 'Não foi possível excluir voucher', 'error');
         } else {
           swal.stopLoading();
           swal.close();
@@ -86,23 +87,24 @@ const UserListResult = ({
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Nome</TableCell>
-                <TableCell>Usuário</TableCell>
-                <TableCell>Data Cadastro</TableCell>
+                <TableCell>Título</TableCell>
+                <TableCell>Data início</TableCell>
+                <TableCell>Data final</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
-              {promocoes.length <= 0 ? (
+              {vouchers.length <= 0 ? (
                 <TableRow key={0}>
                   <TableCell colSpan={6}>
-                    <Alert severity="warning">Nenhum usuário localizada</Alert>
+                    <Alert severity="warning">Nenhum voucher localizado</Alert>
                   </TableCell>
                 </TableRow>
               ) : (
-                promocoes.map((promo) => (
-                  <TableRow hover key={promo.id}>
-                    <TableCell>{promo.id}</TableCell>
+                vouchers.map((voucher) => (
+                  <TableRow hover key={voucher.id}>
+                    <TableCell>{voucher.id}</TableCell>
                     <TableCell>
                       <Box
                         sx={{
@@ -111,26 +113,31 @@ const UserListResult = ({
                         }}
                       >
                         <Typography color="textPrimary" variant="body1">
-                          {promo.nome}
+                          {voucher.titulo}
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{promo.usuario}</TableCell>
-                    <TableCell>{moment(promo.cadastro).format('DD/MM/YYYY')}</TableCell>
                     <TableCell>
-                      <Link to={`/app/users/${promo.id}/view`}>
+                      {moment(voucher.data_inicio).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>
+                      {moment(voucher.data_final).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>{voucher.status}</TableCell>
+                    <TableCell>
+                      <Link to={`/app/voucher/${voucher.id}/view`}>
                         <IconButton size="small">
                           <VisibilityIcon />
                         </IconButton>
                       </Link>
-                      <Link to={`/app/users/${promo.id}/edit`}>
-                        <IconButton size="small">
-                          <EditIcon />
-                        </IconButton>
-                      </Link>
-                      <IconButton size="small" onClick={() => handleDelete(promo)}>
+                      <IconButton size="small" onClick={() => handleDelete(voucher)}>
                         <DeleteIcon />
                       </IconButton>
+                      <Link to={`/app/voucher/${voucher.id}/users`}>
+                        <IconButton size="small">
+                          <GroupAddIcon />
+                        </IconButton>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))
@@ -159,8 +166,8 @@ const UserListResult = ({
   );
 };
 
-UserListResult.propTypes = {
-  promocoes: PropTypes.array.isRequired,
+VoucherListResult.propTypes = {
+  vouchers: PropTypes.array.isRequired,
   page: PropTypes.number.isRequired,
   setPage: PropTypes.func.isRequired,
   perPage: PropTypes.number.isRequired,
@@ -168,4 +175,4 @@ UserListResult.propTypes = {
   total: PropTypes.number.isRequired
 };
 
-export default UserListResult;
+export default VoucherListResult;

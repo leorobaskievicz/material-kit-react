@@ -12,9 +12,9 @@ import AddIcon from '@material-ui/icons/Add';
 import { Link as RouterLink } from 'react-router-dom';
 import { Search as SearchIcon } from 'react-feather';
 import PropTypes from 'prop-types';
-import UserListResult from './UserListResult';
+import VoucherListResult from './VoucherListResult';
 
-const UserListToolbar = ({ search, setSearch, ...rest }) => (
+const VoucherListToolbar = ({ search, setSearch, ...rest }) => (
   <Box {...rest}>
     <Box
       sx={{
@@ -23,7 +23,7 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
         justifyContent: 'flex-end'
       }}
     >
-      <RouterLink to="/app/users/novo">
+      <RouterLink to="/app/voucher/novo">
         <Button size="medium" color="primary" variant="contained">
           <AddIcon />
           Cadastrar
@@ -45,7 +45,7 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Pesquisar usuários"
+              placeholder="Pesquisar voucher"
               variant="outlined"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -57,9 +57,9 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
   </Box>
 );
 
-UserListToolbar.propTypes = {
+VoucherListToolbar.propTypes = {
   search: PropTypes.any.isRequired,
   setSearch: PropTypes.func.isRequired
 };
 
-export default UserListToolbar;
+export default VoucherListToolbar;

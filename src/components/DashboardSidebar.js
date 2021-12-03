@@ -16,7 +16,9 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   Users as UsersIcon,
-  Database as DatabaseIcon
+  Database as DatabaseIcon,
+  File as FileIcon,
+  Gift as GiftIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -38,15 +40,25 @@ const items = [
     title: 'Clientes'
   },
   {
+    href: '/app/customers/bill',
+    icon: FileIcon,
+    title: 'Cliente - Boletos'
+  },
+  {
     href: '/app/promo',
     icon: ShoppingBagIcon,
     title: 'Promoções'
   },
-  // {
-  //   href: '/app/users',
-  //   icon: DatabaseIcon,
-  //   title: 'Usuários'
-  // },
+  {
+    href: '/app/voucher',
+    icon: GiftIcon,
+    title: 'Vouchers'
+  },
+  {
+    href: '/app/users',
+    icon: DatabaseIcon,
+    title: 'Usuários Painel'
+  },
   {
     href: '/app/settings',
     icon: SettingsIcon,
@@ -87,7 +99,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           p: 2
         }}
       >
-        <Avatar
+        {/* <Avatar
           component={RouterLink}
           src={user.avatar}
           sx={{
@@ -96,12 +108,12 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
             height: 64
           }}
           to="/app/account"
-        />
+        /> */}
         <Typography color="textPrimary" variant="h5">
           {auth.user.usuario}
         </Typography>
         {/* <Typography color="textSecondary" variant="body2">
-          {user.jobTitle}
+          {Usuário logado}
         </Typography> */}
       </Box>
       <Divider />

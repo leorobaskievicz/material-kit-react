@@ -5,31 +5,13 @@ import {
   CardContent,
   TextField,
   InputAdornment,
-  SvgIcon,
-  Button
+  SvgIcon
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import { Link as RouterLink } from 'react-router-dom';
 import { Search as SearchIcon } from 'react-feather';
 import PropTypes from 'prop-types';
-import UserListResult from './UserListResult';
 
-const UserListToolbar = ({ search, setSearch, ...rest }) => (
+const CustomerBillListToolbar = ({ search, setSearch, ...rest }) => (
   <Box {...rest}>
-    <Box
-      sx={{
-        mt: 0,
-        display: 'flex',
-        justifyContent: 'flex-end'
-      }}
-    >
-      <RouterLink to="/app/users/novo">
-        <Button size="medium" color="primary" variant="contained">
-          <AddIcon />
-          Cadastrar
-        </Button>
-      </RouterLink>
-    </Box>
     <Box sx={{ mt: 3 }}>
       <Card>
         <CardContent>
@@ -45,7 +27,7 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Pesquisar usuários"
+              placeholder="Pesquisar cliente"
               variant="outlined"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -57,9 +39,9 @@ const UserListToolbar = ({ search, setSearch, ...rest }) => (
   </Box>
 );
 
-UserListToolbar.propTypes = {
+CustomerBillListToolbar.propTypes = {
   search: PropTypes.any.isRequired,
   setSearch: PropTypes.func.isRequired
 };
 
-export default UserListToolbar;
+export default CustomerBillListToolbar;
