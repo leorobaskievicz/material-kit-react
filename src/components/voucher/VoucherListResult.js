@@ -118,10 +118,14 @@ const VoucherListResult = ({
                       </Box>
                     </TableCell>
                     <TableCell>
-                      {moment(voucher.data_inicio).format('DD/MM/YYYY')}
+                      {voucher.tipo_cliente === 'N'
+                        ? 'Data de cadastro no app'
+                        : moment(voucher.data_inicio).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
-                      {moment(voucher.data_final).format('DD/MM/YYYY')}
+                      {voucher.tipo_cliente === 'N'
+                        ? `Até ${voucher.periodo} dia(s) após o cadastro no app`
+                        : moment(voucher.data_final).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>{voucher.status}</TableCell>
                     <TableCell>

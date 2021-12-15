@@ -89,6 +89,7 @@ const VoucherAdd = (props) => {
       param.append('datafim', moment(form.datafim).format('YYYY-MM-DD'));
       param.append('status', 'Ativo');
       param.append('tipoCliente', form.clienteDestino);
+      param.append('periodo', form.periodo);
 
       if (form.clienteDestino === 'E' && clienteSelected.length > 0) {
         const tmp = [];
@@ -266,13 +267,15 @@ const VoucherAdd = (props) => {
         voucher: null,
         status: 'Ativo',
         clienteDestino: 'T',
-        cliente: ''
+        cliente: '',
+        periodo: 30
       }}
       validationSchema={YupVoucherAdd.object().shape({
         titulo: YupVoucherAdd.string().max(100).required('Título é obrigatório'),
         texto: YupVoucherAdd.mixed().required(
           'Texto descritivo da promoção é obrigatório'
         ),
+        periodo: YupVoucherAdd.number().max(1000).min(1),
         voucher: YupVoucherAdd.mixed(),
         banner1: YupVoucherAdd.mixed(),
         dataini: YupVoucherAdd.date()
@@ -546,11 +549,13 @@ const VoucherAdd = (props) => {
                           disabled={isSubmitting}
                         >
                           <MenuItem value="E">Cliente específico</MenuItem>
+                          <MenuItem value="N">Clientes novos</MenuItem>
                           <MenuItem value="T">Todos</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
-                    {values.clienteDestino === 'E' && (
+                    {/* eslint-disable no-nested-ternary */}
+                    {values.clienteDestino === 'E' ? (
                       <>
                         <Grid item md={9} sm={9} xs={12}>
                           <TextField
@@ -636,6 +641,36 @@ const VoucherAdd = (props) => {
                           </List>
                         </Grid>
                       </>
+                    ) : values.clienteDestino === 'N' ? (
+                      <Grid
+                        item
+                        md={9}
+                        sm={9}
+                        xs={12}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        <TextField
+                          fullWidth
+                          label="Dias de validade"
+                          name="periodo"
+                          variant="outlined"
+                          type="number"
+                          error={Boolean(touched.periodo && errors.periodo)}
+                          helperText={touched.periodo && errors.periodo}
+                          value={values.periodo}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          disabled={isSubmitting}
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                        />
+                      </Grid>
+                    ) : (
+                      <></>
                     )}
                     <Grid
                       item
