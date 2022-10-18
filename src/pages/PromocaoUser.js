@@ -5,25 +5,17 @@ import {
   Box,
   Card,
   CardHeader,
-  CardContent,
-  Grid,
-  Checkbox,
   Container,
   Divider,
-  FormControlLabel,
   Typography,
-  TextField,
   CircularProgress,
   IconButton,
-  Button,
-  Paper,
   Alert,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
-  TableSortLabel
+  TableRow
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import PrintIcon from '@material-ui/icons/Print';
@@ -43,6 +35,7 @@ const PromocaoUser = (props) => {
   const history = useNavigate();
   const [isLoadingPromocao, setIsLoadingPromocao] = useState(false);
   const [promocao, setPromocao] = useState(null);
+  const [isLoadingPrint, setIsLoadingPrint] = useState(false);
 
   const getPromocao = async () => {
     setIsLoadingPromocao(true);
@@ -60,6 +53,30 @@ const PromocaoUser = (props) => {
       }
     } finally {
       setIsLoadingPromocao(false);
+    }
+  };
+
+  const print = async () => {
+    setIsLoadingPrint(true);
+
+    try {
+      const { data } = await api.post(`/promocao/${id}/agreement/report`, {}, auth.token);
+
+      if (!data.status) {
+        throw new Error(data.msg);
+      }
+
+      if (!data.link) {
+        throw new Error(`Relatório não localizado`);
+      }
+
+      window.open(data.link, '_blank');
+    } catch (e) {
+      if (process.env.REACT_APP_ENVIROMENT !== 'development') {
+        console.error(e);
+      }
+    } finally {
+      setIsLoadingPrint(false);
     }
   };
 
@@ -90,8 +107,17 @@ const PromocaoUser = (props) => {
                 </IconButton>
               }
               action={
-                <IconButton size="small" color="primary">
-                  <PrintIcon />
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={print}
+                  disabled={isLoadingPrint}
+                >
+                  {isLoadingPrint ? (
+                    <CircularProgress color="primary" size="small" />
+                  ) : (
+                    <PrintIcon />
+                  )}
                 </IconButton>
               }
             />

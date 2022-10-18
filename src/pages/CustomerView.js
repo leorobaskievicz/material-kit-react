@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import {
+  Button,
   Box,
   Card,
   CardHeader,
@@ -17,6 +18,7 @@ import {
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useParams, useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import Api from '../utils/api';
@@ -30,6 +32,7 @@ const CustomerView = (props) => {
   const history = useNavigate();
   const [isLoadingCustomer, setIsLoadingCustomer] = useState(false);
   const [customer, setCustomer] = useState(null);
+  const [isLoadingResetSenha, setIsLoadingResetSenha] = useState(false);
 
   const getCustomer = async () => {
     setIsLoadingCustomer(true);
@@ -47,6 +50,36 @@ const CustomerView = (props) => {
       }
     } finally {
       setIsLoadingCustomer(false);
+    }
+  };
+
+  const handleResetSenha = async () => {
+    setIsLoadingResetSenha(true);
+
+    try {
+      if (!customer.login || !customer.login.email) {
+        throw new Error(`Este contrato não possuí login no app`);
+      }
+
+      const { data } = await api.post(
+        `/customer/reset-senha`,
+        { login: customer.login.email, senhaNova: 'Uni123' },
+        auth.token
+      );
+
+      if (!data.status) {
+        throw new Error(data.msg);
+      }
+
+      swal('Sucesso', 'Senha redefinida com sucesso. Senha nova: Uni123', 'success');
+    } catch (e) {
+      if (process.env.REACT_APP_ENVIROMENT !== 'development') {
+        console.error(e);
+      }
+
+      swal('Atenção', `Não foi possível redefinir senha.\n${e.message}`, 'error');
+    } finally {
+      setIsLoadingResetSenha(false);
     }
   };
 
@@ -108,7 +141,12 @@ const CustomerView = (props) => {
                       }}
                       xs={12}
                     >
-                      <Typography color="textPrimary" gutterBottom variant="h6" sx={{ mb: 2 }}>
+                      <Typography
+                        color="textPrimary"
+                        gutterBottom
+                        variant="h6"
+                        sx={{ mb: 2 }}
+                      >
                         Dados Sistema
                       </Typography>
                       <TextField
@@ -243,7 +281,12 @@ const CustomerView = (props) => {
                       }}
                       xs={12}
                     >
-                      <Typography color="textPrimary" gutterBottom variant="h6" sx={{ mb: 2 }}>
+                      <Typography
+                        color="textPrimary"
+                        gutterBottom
+                        variant="h6"
+                        sx={{ mb: 2 }}
+                      >
                         Dados App
                       </Typography>
                       <TextField
@@ -309,6 +352,27 @@ const CustomerView = (props) => {
                         variant="outlined"
                         disabled
                       />
+                    </Grid>
+                    <Grid
+                      item
+                      md={3}
+                      sm={6}
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start'
+                      }}
+                      xs={12}
+                    >
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={handleResetSenha}
+                        disabled={isLoadingResetSenha}
+                      >
+                        {isLoadingResetSenha ? 'Processando...' : 'Resetar Senha'}
+                      </Button>
                     </Grid>
                   </Grid>
                 </CardContent>
