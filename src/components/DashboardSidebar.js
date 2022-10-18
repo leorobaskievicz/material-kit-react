@@ -18,7 +18,8 @@ import {
   Users as UsersIcon,
   Database as DatabaseIcon,
   File as FileIcon,
-  Gift as GiftIcon
+  Gift as GiftIcon,
+  Bell as BellIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -53,6 +54,11 @@ const items = [
     href: '/app/voucher',
     icon: GiftIcon,
     title: 'Vouchers'
+  },
+  {
+    href: '/app/notificacao',
+    icon: BellIcon,
+    title: 'Notificações'
   },
   {
     href: '/app/users',

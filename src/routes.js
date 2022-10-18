@@ -24,6 +24,10 @@ import UserView from './pages/UserView';
 import UserEdit from './pages/UserEdit';
 import CustomerBillList from './pages/CustomerBillList';
 import CustomerBillView from './pages/CustomerBillView';
+import NotificacaoList from './pages/NotificacaoList';
+import NotificacaoAdd from './pages/NotificacaoAdd';
+import NotificacaoView from './pages/NotificacaoView';
+import NotificacaoEdit from './pages/NotificacaoEdit';
 
 const routes = [
   {
@@ -40,6 +44,10 @@ const routes = [
       { path: 'promo/:id/view', element: <PromocaoView /> },
       { path: 'promo/:id/edit', element: <PromocaoEdit /> },
       { path: 'promo/:id/users', element: <PromocaoUser /> },
+      { path: 'notificacao', element: <NotificacaoList /> },
+      { path: 'notificacao/novo', element: <NotificacaoAdd /> },
+      { path: 'notificacao/:id/view', element: <NotificacaoView /> },
+      { path: 'notificacao/:id/edit', element: <NotificacaoEdit /> },
       { path: 'voucher', element: <VoucherList /> },
       { path: 'voucher/novo', element: <VoucherAdd /> },
       { path: 'voucher/:id/view', element: <VoucherView /> },
